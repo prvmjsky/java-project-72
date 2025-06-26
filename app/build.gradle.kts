@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    application
     checkstyle
     jacoco
     id("org.sonarqube") version "6.1.0.5360"
@@ -16,8 +16,16 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+
+    implementation("io.javalin:javalin:6.6.0")
+    implementation("org.slf4j:slf4j-simple:2.0.7")
+
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")
+
+    implementation("com.h2database:h2:2.2.220")
+    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("org.postgresql:postgresql:42.7.7")
 }
 
 tasks.test {
