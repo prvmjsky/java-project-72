@@ -23,10 +23,6 @@ public class App {
 
     public static void main(String[] args) throws SQLException, IOException {
         var app = getApp();
-        app.before(ctx -> LOG.info(Instant.now().toString()));
-
-        app.get(NamedRoutes.rootPath(), ctx -> ctx.result("Hello World"));
-
         app.start(getPort());
     }
 
@@ -52,12 +48,14 @@ public class App {
         hikariConfig.setJdbcUrl(getDatabaseUrl());
         var dataSource = new HikariDataSource(hikariConfig);
 
-        var sql = readResourceFile("schema.sql");
         try (
             var connection = dataSource.getConnection();
             var statement = connection.createStatement()
         ) {
+            var sql = readResourceFile("schema.sql");
             statement.execute(sql);
+        } catch (NullPointerException e) {
+            System.out.println("No SQL schema found");
         }
 
         BaseRepository.dataSource = dataSource;
@@ -66,6 +64,10 @@ public class App {
             config.bundledPlugins.enableDevLogging();
             config.fileRenderer(new JavalinJte());
         });
+
+        app.before(ctx -> LOG.info(Instant.now().toString()));
+
+        app.get(NamedRoutes.rootPath(), ctx -> ctx.result("Hello World"));
 
         return app;
     }
