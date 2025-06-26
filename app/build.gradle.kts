@@ -4,6 +4,11 @@ plugins {
     jacoco
     id("org.sonarqube") version "6.1.0.5360"
     id("com.github.ben-manes.versions") version "0.52.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+}
+
+application {
+    mainClass.set("hexlet.code.App")
 }
 
 group = "hexlet.code"
@@ -19,6 +24,8 @@ dependencies {
 
     implementation("io.javalin:javalin:6.6.0")
     implementation("org.slf4j:slf4j-simple:2.0.7")
+    implementation("io.javalin:javalin-rendering:6.6.0")
+    implementation("gg.jte:jte:3.2.1")
 
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")
