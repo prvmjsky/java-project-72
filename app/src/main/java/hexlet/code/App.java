@@ -1,5 +1,9 @@
 package hexlet.code;
 
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import gg.jte.resolve.ResourceCodeResolver;
+import hexlet.code.dto.MainPage;
 import hexlet.code.repository.BaseRepository;
 
 import hexlet.code.util.NamedRoutes;
@@ -16,7 +20,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class App {
     private static final Logger LOG = LoggerFactory.getLogger(App.class);
@@ -43,6 +50,13 @@ public class App {
             "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
     }
 
+    private static TemplateEngine createTemplateEngine() {
+        ClassLoader classLoader = App.class.getClassLoader();
+        ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", classLoader);
+        TemplateEngine templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
+        return templateEngine;
+    }
+
     private static Javalin getApp() throws SQLException, IOException {
         var hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl());
@@ -62,12 +76,18 @@ public class App {
 
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
-            config.fileRenderer(new JavalinJte());
+            config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
         app.before(ctx -> LOG.info(Instant.now().toString()));
 
-        app.get(NamedRoutes.rootPath(), ctx -> ctx.result("Hello World"));
+        app.get(NamedRoutes.rootPath(), ctx -> {
+            String currentUser = Objects.requireNonNullElse(
+                ctx.sessionAttribute("currentUser"),"Гость"
+            );
+            var page = MainPage.of(currentUser);
+            ctx.render("index.jte", model("page", page));
+        });
 
         return app;
     }
