@@ -83,7 +83,7 @@ public class App {
 
         app.get(NamedRoutes.rootPath(), ctx -> {
             String currentUser = Objects.requireNonNullElse(
-                ctx.sessionAttribute("currentUser"),"Гость"
+                ctx.sessionAttribute("currentUser"), "Гость"
             );
             var page = MainPage.of(currentUser);
             ctx.render("index.jte", model("page", page));

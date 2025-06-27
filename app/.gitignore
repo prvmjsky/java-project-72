@@ -1,3 +1,8 @@
+*.class
+jte-classes
+*.settings
+bin
+
 **/.idea/
 /demo.cast
 **/logs/
