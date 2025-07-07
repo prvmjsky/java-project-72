@@ -4,6 +4,8 @@ import hexlet.code.model.Url;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UrlRepository extends BaseRepository {
@@ -38,9 +40,7 @@ public class UrlRepository extends BaseRepository {
             if (rs.next()) {
                 var name = rs.getString("name");
                 var createdAt = rs.getTimestamp("created_at");
-                var url = new Url(name);
-                url.setId(id);
-                url.setCreatedAt(createdAt);
+                var url = new Url(id, name, createdAt);
                 return Optional.of(url);
             } else {
                 return Optional.empty();
@@ -60,13 +60,31 @@ public class UrlRepository extends BaseRepository {
             if (rs.next()) {
                 var id = rs.getLong("id");
                 var createdAt = rs.getTimestamp("created_at");
-                var url = new Url(name);
-                url.setId(id);
-                url.setCreatedAt(createdAt);
+                var url = new Url(id, name, createdAt);
                 return Optional.of(url);
             } else {
                 return Optional.empty();
             }
+        }
+    }
+
+    public static List<Url> getEntities() throws SQLException {
+        var sql = "SELECT * FROM users";
+        try (
+            var conn = dataSource.getConnection();
+            var stmt = conn.prepareStatement(sql)
+        ) {
+            var rs = stmt.executeQuery();
+            var result = new ArrayList<Url>();
+            while (rs.next()) {
+                var id = rs.getLong("id");
+                var name = rs.getString("name");
+                var createdAt = rs.getTimestamp("created_at");
+                var url = new Url(id, name, createdAt);
+                url.setId(id);
+                result.add(url);
+            }
+            return result;
         }
     }
 }
