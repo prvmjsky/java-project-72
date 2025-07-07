@@ -6,7 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 public class MainPage extends BasePage {
     private String currentUser;
+    private String url;
 }

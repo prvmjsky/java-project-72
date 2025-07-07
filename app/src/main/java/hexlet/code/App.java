@@ -3,6 +3,7 @@ package hexlet.code;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
+import hexlet.code.controller.UrlsController;
 import hexlet.code.dto.MainPage;
 import hexlet.code.repository.BaseRepository;
 
@@ -85,9 +86,15 @@ public class App {
             String currentUser = Objects.requireNonNullElse(
                 ctx.sessionAttribute("currentUser"), "Гость"
             );
-            var page = MainPage.of(currentUser);
+            String url = ctx.sessionAttribute("url");
+            var page = new MainPage(currentUser, url);
+
             ctx.render("index.jte", model("page", page));
         });
+
+        app.get(NamedRoutes.urlsPath(), UrlsController::index);
+        app.post(NamedRoutes.urlsPath(), UrlsController::create);
+        app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
 
         return app;
     }

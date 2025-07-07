@@ -16,6 +16,11 @@
         <link rel="stylesheet" href="../../bootstrap/css/bootstrap-utilities.min.css">
     </head>
     <body>
+        @if(page != null && page.getFlash() != null)
+            <div class="${page.getFlashType()}" role="alert">
+                <p>${page.getFlash()}</p>
+            </div>
+        @endif
         <header>
             <nav>
                 <h1><a href="${NamedRoutes.rootPath()}">На главную</a></h1>
