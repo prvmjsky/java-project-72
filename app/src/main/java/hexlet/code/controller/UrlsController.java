@@ -22,14 +22,14 @@ public class UrlsController {
         var page = new UrlsPage(urls);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
-        ctx.render("users/index.jte", model("page", page));
+        ctx.render("urls/index.jte", model("page", page));
     }
 
     public static void show(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         var url = UrlRepository.find(id).orElseThrow(NotFoundResponse::new);
         var page = new UrlPage(url);
-        ctx.render("users/show.jte", model("page", page));
+        ctx.render("urls/show.jte", model("page", page));
     }
 
     public static void create(Context ctx) throws SQLException {
