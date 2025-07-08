@@ -26,6 +26,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.17")
     implementation("io.javalin:javalin-rendering:6.7.0")
     implementation("gg.jte:jte:3.2.1")
+    implementation("gg.jte:jte-watcher:3.2.1")
 
     compileOnly("org.projectlombok:lombok:1.18.38")
     annotationProcessor("org.projectlombok:lombok:1.18.38")

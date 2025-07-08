@@ -87,8 +87,10 @@ public class App {
                 ctx.sessionAttribute("currentUser"), "Гость"
             );
             String url = ctx.sessionAttribute("url");
-            var page = new MainPage(currentUser, url);
 
+            var page = new MainPage(currentUser, url);
+            page.setFlash(ctx.consumeSessionAttribute("flash"));
+            page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
             ctx.render("index.jte", model("page", page));
         });
 

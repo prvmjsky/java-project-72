@@ -6,14 +6,14 @@
 @param BasePage page = null
 
 <!doctype html>
-<html lang="en">
+<html lang="ru">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>${headTitle}</title>
 
-        <link rel="stylesheet" href="../../bootstrap/css/bootstrap-grid.min.css">
-        <link rel="stylesheet" href="../../bootstrap/css/bootstrap-utilities.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     </head>
     <body>
         @if(page != null && page.getFlash() != null)
@@ -23,14 +23,10 @@
         @endif
         <header>
             <nav>
-                <h1><a href="${NamedRoutes.rootPath()}">На главную</a></h1>
+                <h4><a href="${NamedRoutes.rootPath()}">На главную</a></h4>
+                <h4><a href="${NamedRoutes.urlsPath()}">Сайты</a></h4>
             </nav>
         </header>
-
-        @if(page != null && page.getFlash() != null)
-            <p>${page.getFlash()}</p>
-        @endif
-
         ${content}
     </body>
 </html>

@@ -12,7 +12,7 @@
         @else
             @for(var url : page.getUrls())
                 <div>
-                    <h3><a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a></h3>
+                    <h4><a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a></h4>
                 </div>
             @endfor
         @endif

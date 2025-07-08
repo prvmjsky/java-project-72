@@ -11,6 +11,7 @@ import io.javalin.http.NotFoundResponse;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
@@ -32,10 +33,10 @@ public class UrlsController {
         ctx.render("urls/show.jte", model("page", page));
     }
 
-    public static void create(Context ctx) throws SQLException {
+    public static void create(Context ctx) throws SQLException, URISyntaxException {
 
         try {
-            var url = ctx.formParamAsClass("url", URI.class).get().normalize().toURL();
+            var url = new URI(ctx.formParam("url")).normalize().toURL();
             var protocol = url.getProtocol();
             var authority = url.getAuthority();
             var urlName = String.format("%s://%s", protocol, authority);
@@ -51,19 +52,15 @@ public class UrlsController {
             ctx.redirect(NamedRoutes.rootPath());
 
         } catch (MalformedURLException | IllegalArgumentException e) {
-            var page = new MainPage(
-                ctx.sessionAttribute("currentUser"),
-                ctx.formParam("url")
-            );
 
             if (e instanceof MalformedURLException) {
-                page.setFlash("Некорректный URL");
+                ctx.sessionAttribute("flash", "Некорректный URL");
             } else {
-                page.setFlash(e.getMessage());
+                ctx.sessionAttribute("flash", e.getMessage());
             }
 
-            page.setFlashType("alert alert-danger");
-            ctx.render(NamedRoutes.rootPath(), model("page", page));
+            ctx.sessionAttribute("flash-type", "alert alert-danger");
+            ctx.redirect(NamedRoutes.rootPath());
         }
     }
 }
