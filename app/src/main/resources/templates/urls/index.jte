@@ -6,7 +6,7 @@
     page = page,
     headTitle = "Добавленные сайты",
     content = @`
-        <h1>Users</h1>
+        <h1>Добавленные сайты</h1>
         @if(page.getUrls().isEmpty())
             <p>Ещё не добавлено ни одного сайта</p>
         @else

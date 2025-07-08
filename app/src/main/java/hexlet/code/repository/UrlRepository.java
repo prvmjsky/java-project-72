@@ -29,7 +29,7 @@ public class UrlRepository extends BaseRepository {
     }
 
     public static Optional<Url> find(Long id) throws SQLException {
-        var sql = "SELECT * FROM users WHERE id = ?";
+        var sql = "SELECT * FROM urls WHERE id = ?";
         try (
             var conn = dataSource.getConnection();
             var stmt = conn.prepareStatement(sql)
@@ -49,7 +49,7 @@ public class UrlRepository extends BaseRepository {
     }
 
     public static Optional<Url> findByName(String name) throws SQLException {
-        var sql = "SELECT * FROM users WHERE name = ?";
+        var sql = "SELECT * FROM urls WHERE name = ?";
         try (
             var conn = dataSource.getConnection();
             var stmt = conn.prepareStatement(sql)
@@ -69,7 +69,7 @@ public class UrlRepository extends BaseRepository {
     }
 
     public static List<Url> getEntities() throws SQLException {
-        var sql = "SELECT * FROM users";
+        var sql = "SELECT * FROM urls";
         try (
             var conn = dataSource.getConnection();
             var stmt = conn.prepareStatement(sql)
