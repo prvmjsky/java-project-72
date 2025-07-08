@@ -22,7 +22,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
-    implementation("io.javalin:javalin:6.7.0")
+    implementation("io.javalin:javalin-bundle:6.7.0")
     implementation("org.slf4j:slf4j-simple:2.0.17")
     implementation("io.javalin:javalin-rendering:6.7.0")
     implementation("gg.jte:jte:3.2.1")
