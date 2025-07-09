@@ -26,7 +26,7 @@ content = @`
         <form action="${NamedRoutes.urlChecksPath(page.getUrl().getId())}" method="post">
             <input type="submit" value="Запустить проверку">
         </form>
-        @if (page.getUrl().getChecks() != null)
+        @if (page.getChecks() != null)
             <table>
                 <thead>
                 <tr>
@@ -36,7 +36,7 @@ content = @`
                 </tr>
                 </thead>
                 <tbody>
-                @for (var check : page.getUrl().getChecks())
+                @for (var check : page.getChecks())
                     <tr>
                         <th>${check.getId()}</th>
                         <th>${check.getStatusCode()}</th>

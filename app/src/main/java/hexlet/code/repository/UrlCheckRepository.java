@@ -52,21 +52,19 @@ public class UrlCheckRepository extends BaseRepository {
         }
     }
 
-    public static List<UrlCheck> getChecksByUrlId(Long urlId) throws SQLException {
-        var sql = "SELECT * FROM url_checks WHERE url_id = ?";
+    public static List<UrlCheck> getEntities() throws SQLException {
+        var sql = "SELECT * FROM url_checks";
         try (
             var conn = dataSource.getConnection();
             var stmt = conn.prepareStatement(sql)
         ) {
-            stmt.setLong(1, urlId);
-
             var rs = stmt.executeQuery();
             var result = new ArrayList<UrlCheck>();
             while (rs.next()) {
                 var check = UrlCheck.builder()
                     .id(rs.getLong("id"))
                     .statusCode(rs.getInt("status_code"))
-                    .urlId(urlId)
+                    .urlId(rs.getLong("url_id"))
                     .createdAt(rs.getTimestamp("created_at"))
                     .build();
                 result.add(check);

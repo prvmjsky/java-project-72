@@ -3,6 +3,8 @@ package hexlet.code.controller;
 import hexlet.code.dto.urls.UrlPage;
 import hexlet.code.dto.urls.UrlsPage;
 import hexlet.code.model.Url;
+import hexlet.code.model.UrlCheck;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
@@ -12,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -19,7 +22,13 @@ public class UrlsController {
 
     public static void index(Context ctx) throws SQLException {
         var urls = UrlRepository.getEntities();
-        var page = new UrlsPage(urls);
+        var latestChecks = new HashMap<Long, UrlCheck>();
+
+        for (var check : UrlCheckRepository.getEntities()) {
+            latestChecks.put(check.getUrlId(), check);
+        }
+
+        var page = new UrlsPage(urls, latestChecks);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/index.jte", model("page", page));
@@ -28,7 +37,11 @@ public class UrlsController {
     public static void show(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         var url = UrlRepository.find(id).orElseThrow(NotFoundResponse::new);
-        var page = new UrlPage(url);
+        var checks = UrlCheckRepository.getEntities().stream()
+            .filter(check -> check.getUrlId().equals(id))
+            .toList();
+
+        var page = new UrlPage(url, checks);
         ctx.render("urls/show.jte", model("page", page));
     }
 

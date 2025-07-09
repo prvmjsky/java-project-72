@@ -18,9 +18,7 @@ public class UrlChecksController {
         var status = Unirest.get(url.getName())
             .asString()
             .getStatus();
-
         var check = new UrlCheck(status, urlId);
-        url.addCheck(check);
 
         UrlCheckRepository.save(check);
         ctx.redirect(NamedRoutes.urlPath(urlId));

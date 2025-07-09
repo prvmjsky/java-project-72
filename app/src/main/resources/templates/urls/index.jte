@@ -24,9 +24,9 @@ content = @`
                 <tr>
                     <td>${url.getId()}</td>
                     <td><a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a></td>
-                    @if (url.getChecks() != null)
-                        <td>${String.valueOf(url.getChecks().getLast().getCreatedAt())}</td>
-                        <td>${url.getChecks().getLast().getStatusCode()}</td>
+                    @if (page.getLatestChecks() != null && page.getLatestChecks().containsKey(url.getId()))
+                        <td>${String.valueOf(page.getLatestChecks().get(url.getId()).getCreatedAt())}</td>
+                        <td>${page.getLatestChecks().get(url.getId()).getStatusCode()}</td>
                     @endif
                 </tr>
             @endfor
