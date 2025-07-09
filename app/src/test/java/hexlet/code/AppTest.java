@@ -6,6 +6,10 @@ import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.http.NotFoundResponse;
 import io.javalin.testtools.JavalinTest;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
+import okhttp3.Headers;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,11 +20,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class AppTest {
+    private static MockWebServer server;
     private Javalin app;
 
     @BeforeEach
     public void setUp() throws SQLException, IOException {
+        server = new MockWebServer();
+        var response = new MockResponse(200, new Headers.Builder().build(), "i'm so tired");
+        server.enqueue(response);
+        server.start();
+
         app = App.getApp();
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        server.close();
     }
 
     @Test
@@ -85,6 +100,19 @@ public final class AppTest {
 
             var getResponse = client.get(NamedRoutes.urlsPath());
             assertTrue(getResponse.body().string().contains(urlName));
+        });
+    }
+
+    @Test
+    public void testUrlCheck() throws SQLException {
+        var urlName = server.url("/").toString();
+        var url = new Url(urlName);
+        UrlRepository.save(url);
+        var urlId = UrlRepository.findByName(urlName).get().getId();
+
+        JavalinTest.test(app, (server, client) -> {
+            var postResponse = client.post(NamedRoutes.urlChecksPath(urlId));
+            assertEquals(200, postResponse.code());
         });
     }
 }
