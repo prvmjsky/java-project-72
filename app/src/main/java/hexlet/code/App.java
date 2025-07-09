@@ -3,6 +3,7 @@ package hexlet.code;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
+import hexlet.code.controller.UrlChecksController;
 import hexlet.code.controller.UrlsController;
 import hexlet.code.dto.MainPage;
 import hexlet.code.repository.BaseRepository;
@@ -97,6 +98,8 @@ public class App {
         app.get(NamedRoutes.urlsPath(), UrlsController::index);
         app.post(NamedRoutes.urlsPath(), UrlsController::create);
         app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
+
+        app.post(NamedRoutes.urlChecksPath("{id}"), UrlChecksController::create);
 
         return app;
     }

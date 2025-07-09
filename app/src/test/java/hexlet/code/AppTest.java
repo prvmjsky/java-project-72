@@ -4,6 +4,7 @@ import hexlet.code.model.Url;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
+import io.javalin.http.NotFoundResponse;
 import io.javalin.testtools.JavalinTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,9 +77,9 @@ public final class AppTest {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=" + urlName;
             var postResponse = client.post(NamedRoutes.urlsPath(), requestBody);
-            var url = UrlRepository.findByName(urlName);
+            var url = UrlRepository.findByName(urlName).orElseThrow(NotFoundResponse::new);
 
-            assertEquals(urlName, url.get().getName());
+            assertEquals(urlName, url.getName());
             assertEquals(200, postResponse.code());
             assertTrue(postResponse.body().string().contains("Главная страница"));
 
