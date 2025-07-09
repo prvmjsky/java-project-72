@@ -35,7 +35,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:6.3.0")
     implementation("org.postgresql:postgresql:42.7.7")
 
-    compileOnly("com.konghq:unirest-java-core:4.4.7")
+    implementation("com.konghq:unirest-java-core:4.4.7")
     testImplementation("com.squareup.okhttp3:mockwebserver3:5.1.0")
 }
 

@@ -12,20 +12,22 @@ content = @`
     @else
         <table>
             <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Адрес</th>
-                    <th>Последняя проверка</th>
-                    <th>Код ответа</th>
-                </tr>
+            <tr>
+                <th>ID</th>
+                <th>Адрес</th>
+                <th>Последняя проверка</th>
+                <th>Код ответа</th>
+            </tr>
             </thead>
             <tbody>
             @for(var url : page.getUrls())
                 <tr>
                     <td>${url.getId()}</td>
                     <td><a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a></td>
-                    <td>${String.valueOf(url.getChecks().getLast().getCreatedAt())}</td>
-                    <td>${url.getChecks().getLast().getStatusCode()}</td>
+                    @if (url.getChecks() != null)
+                        <td>${String.valueOf(url.getChecks().getLast().getCreatedAt())}</td>
+                        <td>${url.getChecks().getLast().getStatusCode()}</td>
+                    @endif
                 </tr>
             @endfor
             </tbody>

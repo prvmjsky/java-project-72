@@ -1,6 +1,4 @@
 @import hexlet.code.dto.urls.UrlPage
-@import hexlet.code.model.Url
-@import hexlet.code.repository.UrlCheckRepository
 @import hexlet.code.util.NamedRoutes
 @param UrlPage page
 
@@ -10,7 +8,7 @@ headTitle = "Проверьте сайт",
 content = @`
     <div class="col-lg-8 mx-auto p-4 py-md-5">
         <h2>Информация о сайте</h2>
-        <table class="iksweb">
+        <table>
             <tr>
                 <td>ID</td>
                 <td>${page.getUrl().getId()}</td>

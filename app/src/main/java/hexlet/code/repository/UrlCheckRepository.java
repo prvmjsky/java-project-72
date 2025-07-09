@@ -56,7 +56,7 @@ public class UrlCheckRepository extends BaseRepository {
         var sql = "SELECT * FROM url_checks WHERE url_id = ?";
         try (
             var conn = dataSource.getConnection();
-            var stmt = conn.prepareStatement(sql);
+            var stmt = conn.prepareStatement(sql)
         ) {
             stmt.setLong(1, urlId);
 
