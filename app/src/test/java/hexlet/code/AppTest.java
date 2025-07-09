@@ -62,10 +62,28 @@ public final class AppTest {
     }
 
     @Test
-    void testUrlNotFound() {
+    public void testUrlNotFound() {
         JavalinTest.test(app, (server, client) -> {
-            var response = client.get("/urls/1");
+            var response = client.get(NamedRoutes.urlPath("1"));
             assertEquals(404, response.code());
+        });
+    }
+
+    @Test
+    public void testSaveUrl() {
+        var urlName = "https://one.com";
+
+        JavalinTest.test(app, (server, client) -> {
+            var requestBody = "url=" + urlName;
+            var postResponse = client.post(NamedRoutes.urlsPath(), requestBody);
+            var url = UrlRepository.findByName(urlName);
+
+            assertEquals(urlName, url.get().getName());
+            assertEquals(200, postResponse.code());
+            assertTrue(postResponse.body().string().contains("Главная страница"));
+
+            var getResponse = client.get(NamedRoutes.urlsPath());
+            assertTrue(getResponse.body().string().contains(urlName));
         });
     }
 }
