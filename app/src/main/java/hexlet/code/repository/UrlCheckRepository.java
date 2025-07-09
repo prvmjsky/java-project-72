@@ -4,6 +4,8 @@ import hexlet.code.model.UrlCheck;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UrlCheckRepository extends BaseRepository {
@@ -47,6 +49,30 @@ public class UrlCheckRepository extends BaseRepository {
             } else {
                 return Optional.empty();
             }
+        }
+    }
+
+    public static List<UrlCheck> getChecksByUrlId(Long urlId) throws SQLException {
+        var sql = "SELECT * FROM url_checks WHERE url_id = ?";
+        try (
+            var conn = dataSource.getConnection();
+            var stmt = conn.prepareStatement(sql);
+        ) {
+            stmt.setLong(1, urlId);
+
+            var rs = stmt.executeQuery();
+            var result = new ArrayList<UrlCheck>();
+            while (rs.next()) {
+                var check = UrlCheck.builder()
+                    .id(rs.getLong("id"))
+                    .statusCode(rs.getInt("status_code"))
+                    .urlId(urlId)
+                    .createdAt(rs.getTimestamp("created_at"))
+                    .build();
+                result.add(check);
+            }
+
+            return result;
         }
     }
 }

@@ -20,6 +20,8 @@ public class UrlCheck {
     private Long urlId;
     private Timestamp createdAt;
 
+    private Url url;
+
     public UrlCheck(Integer statusCode, Long urlId) {
         this.statusCode = statusCode;
         this.urlId = urlId;

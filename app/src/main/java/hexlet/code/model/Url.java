@@ -14,7 +14,7 @@ public class Url {
     private String name;
     private Timestamp createdAt;
 
-    private List<UrlCheck> checks = new ArrayList<>();
+    private List<UrlCheck> checks;
 
     public Url(String name) {
         this.name = name;
@@ -25,5 +25,15 @@ public class Url {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
+    }
+
+    public void addCheck(UrlCheck check) {
+
+        if (checks == null) {
+            checks = new ArrayList<>();
+        }
+
+        check.setUrl(this);
+        checks.add(check);
     }
 }

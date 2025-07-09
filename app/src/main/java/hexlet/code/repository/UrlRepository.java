@@ -84,6 +84,7 @@ public class UrlRepository extends BaseRepository {
                 url.setId(id);
                 result.add(url);
             }
+
             return result;
         }
     }
