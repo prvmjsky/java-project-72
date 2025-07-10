@@ -29,6 +29,7 @@ public class UrlsController {
         }
 
         var page = new UrlsPage(urls, latestChecks);
+
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/index.jte", model("page", page));
@@ -42,6 +43,9 @@ public class UrlsController {
             .toList();
 
         var page = new UrlPage(url, checks);
+
+        page.setFlash(ctx.consumeSessionAttribute("flash"));
+        page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/show.jte", model("page", page));
     }
 

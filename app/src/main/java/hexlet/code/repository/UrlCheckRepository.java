@@ -4,19 +4,28 @@ import hexlet.code.model.UrlCheck;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UrlCheckRepository extends BaseRepository {
 
     public static void save(UrlCheck check) throws SQLException {
-        var sql = "INSERT INTO url_checks (status_code, url_id, created_at) VALUES (?, ?, ?)";
+        var sql = """
+            INSERT INTO url_checks
+                (status_code, title, h1, description, url_id, created_at)
+            VALUES
+                (?, ?, ?, ?, ?, ?)
+            """;
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setInt(1, check.getStatusCode());
-            stmt.setLong(2, check.getUrlId());
-            stmt.setTimestamp(3, check.getCreatedAt());
+            stmt.setString(2, check.getTitle());
+            stmt.setString(3, check.getH1());
+            stmt.setString(4, check.getDescription());
+            stmt.setLong(5, check.getUrlId());
+            stmt.setTimestamp(6, Timestamp.valueOf(check.getCreatedAt()));
             stmt.executeUpdate();
 
             var keys = stmt.getGeneratedKeys();
@@ -63,8 +72,11 @@ public class UrlCheckRepository extends BaseRepository {
                 var check = UrlCheck.builder()
                     .id(rs.getLong("id"))
                     .statusCode(rs.getInt("status_code"))
+                    .title(rs.getString("title"))
+                    .h1(rs.getString("h1"))
+                    .description(rs.getString("description"))
                     .urlId(rs.getLong("url_id"))
-                    .createdAt(rs.getTimestamp("created_at"))
+                    .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
                     .build();
                 result.add(check);
             }

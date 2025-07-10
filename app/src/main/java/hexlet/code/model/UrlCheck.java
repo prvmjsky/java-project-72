@@ -5,12 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 public class UrlCheck {
     private Long id;
     private Integer statusCode;
@@ -18,13 +18,16 @@ public class UrlCheck {
     private String h1;
     private String description;
     private Long urlId;
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     private Url url;
 
-    public UrlCheck(Integer statusCode, Long urlId) {
+    public UrlCheck(Integer statusCode, String title, String h1, String description, Long urlId) {
         this.statusCode = statusCode;
         this.urlId = urlId;
-        this.createdAt = new Timestamp(System.currentTimeMillis());
+        this.title = title;
+        this.h1 = h1;
+        this.description = description;
+        this.createdAt = LocalDateTime.now();
     }
 }

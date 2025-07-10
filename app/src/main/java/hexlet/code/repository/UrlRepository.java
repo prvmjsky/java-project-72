@@ -4,6 +4,7 @@ import hexlet.code.model.Url;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,7 @@ public class UrlRepository extends BaseRepository {
              var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setString(1, url.getName());
-            stmt.setTimestamp(2, url.getCreatedAt());
+            stmt.setTimestamp(2, Timestamp.valueOf(url.getCreatedAt()));
             stmt.executeUpdate();
 
             var keys = stmt.getGeneratedKeys();
@@ -38,9 +39,11 @@ public class UrlRepository extends BaseRepository {
 
             var rs = stmt.executeQuery();
             if (rs.next()) {
-                var name = rs.getString("name");
-                var createdAt = rs.getTimestamp("created_at");
-                var url = new Url(id, name, createdAt);
+                var url = Url.builder()
+                    .id(id)
+                    .name(rs.getString("name"))
+                    .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                    .build();
                 return Optional.of(url);
             } else {
                 return Optional.empty();
@@ -58,9 +61,11 @@ public class UrlRepository extends BaseRepository {
 
             var rs = stmt.executeQuery();
             if (rs.next()) {
-                var id = rs.getLong("id");
-                var createdAt = rs.getTimestamp("created_at");
-                var url = new Url(id, name, createdAt);
+                var url = Url.builder()
+                    .id(rs.getLong("id"))
+                    .name(name)
+                    .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                    .build();
                 return Optional.of(url);
             } else {
                 return Optional.empty();
@@ -77,11 +82,11 @@ public class UrlRepository extends BaseRepository {
             var rs = stmt.executeQuery();
             var result = new ArrayList<Url>();
             while (rs.next()) {
-                var id = rs.getLong("id");
-                var name = rs.getString("name");
-                var createdAt = rs.getTimestamp("created_at");
-                var url = new Url(id, name, createdAt);
-                url.setId(id);
+                var url = Url.builder()
+                    .id(rs.getLong("id"))
+                    .name(rs.getString("name"))
+                    .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                    .build();
                 result.add(url);
             }
 

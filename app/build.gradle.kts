@@ -37,6 +37,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:6.3.0")
     implementation("org.postgresql:postgresql:42.7.7")
     implementation("com.konghq:unirest-java-core:4.4.7")
+    implementation("org.jsoup:jsoup:1.21.1")
 
     compileOnly("org.projectlombok:lombok:$lombokVersion")
     annotationProcessor("org.projectlombok:lombok:$lombokVersion")
