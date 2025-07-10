@@ -99,7 +99,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testInvalidUrl() {
+    public void testUrlDuplicate() {
         JavalinTest.test(app, (server, client) -> {
             when(ctx.formParam("url")).thenReturn(rawUrl);
 
@@ -112,6 +112,17 @@ public final class AppTest {
             verify(ctx).sessionAttribute("flash-type", "alert alert-danger");
 
             verify(ctx, times(2)).redirect(NamedRoutes.rootPath());
+        });
+    }
+
+    @Test
+    public void testUrlIncorrect() {
+        JavalinTest.test(app, (server, client) -> {
+            when(ctx.formParam("url")).thenReturn(" " + rawUrl);
+            assertDoesNotThrow(() -> UrlsController.create(ctx));
+            verify(ctx).sessionAttribute("flash", "Некорректный URL");
+            verify(ctx).sessionAttribute("flash-type", "alert alert-danger");
+            verify(ctx).redirect(NamedRoutes.rootPath());
         });
     }
 
