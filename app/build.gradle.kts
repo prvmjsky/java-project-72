@@ -37,6 +37,7 @@ dependencies {
 
     implementation("com.konghq:unirest-java-core:4.4.7")
     testImplementation("com.squareup.okhttp3:mockwebserver3:5.1.0")
+    testImplementation("org.mockito:mockito-core:5.18.0")
 }
 
 tasks.test {

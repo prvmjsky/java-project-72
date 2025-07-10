@@ -1,13 +1,20 @@
 package hexlet.code;
 
+import hexlet.code.controller.UrlsController;
 import hexlet.code.model.Url;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
-import io.javalin.http.NotFoundResponse;
+import io.javalin.http.Context;
 import io.javalin.testtools.JavalinTest;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import okhttp3.Headers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,15 +27,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class AppTest {
+    private Context ctx;
     private static MockWebServer server;
+    private String rawUrl;
     private Javalin app;
 
     @BeforeEach
     public void setUp() throws SQLException, IOException {
+        ctx = mock(Context.class);
+
         server = new MockWebServer();
         var response = new MockResponse(200, new Headers.Builder().build(), "i'm so tired");
         server.enqueue(response);
         server.start();
+
+        rawUrl = server.url("/").toString();
 
         app = App.getApp();
     }
@@ -86,31 +99,44 @@ public final class AppTest {
     }
 
     @Test
-    public void testSaveUrl() {
-        var urlName = "https://one.com";
-
+    public void testInvalidUrl() {
         JavalinTest.test(app, (server, client) -> {
-            var requestBody = "url=" + urlName;
-            var postResponse = client.post(NamedRoutes.urlsPath(), requestBody);
-            var url = UrlRepository.findByName(urlName).orElseThrow(NotFoundResponse::new);
+            when(ctx.formParam("url")).thenReturn(rawUrl);
 
-            assertEquals(urlName, url.getName());
+            UrlsController.create(ctx);
+            verify(ctx).sessionAttribute("flash", "Страница успешно добавлена");
+            verify(ctx).sessionAttribute("flash-type", "alert alert-success");
+
+            assertDoesNotThrow(() -> UrlsController.create(ctx));
+            verify(ctx).sessionAttribute("flash", "Страница уже существует");
+            verify(ctx).sessionAttribute("flash-type", "alert alert-danger");
+
+            verify(ctx, times(2)).redirect(NamedRoutes.rootPath());
+        });
+    }
+
+    @Test
+    public void testPostUrl() {
+        JavalinTest.test(app, (server, client) -> {
+            var requestBody = "url=" + rawUrl;
+            var postResponse = client.post(NamedRoutes.urlsPath(), requestBody);
             assertEquals(200, postResponse.code());
             assertTrue(postResponse.body().string().contains("Главная страница"));
 
+            var urlName = UrlsController.normalizeUrlName(rawUrl);
             var getResponse = client.get(NamedRoutes.urlsPath());
             assertTrue(getResponse.body().string().contains(urlName));
         });
     }
 
     @Test
-    public void testUrlCheck() throws SQLException {
-        var urlName = server.url("/").toString();
-        var url = new Url(urlName);
-        UrlRepository.save(url);
-        var urlId = UrlRepository.findByName(urlName).get().getId();
-
+    public void testPostUrlCheck() {
         JavalinTest.test(app, (server, client) -> {
+            var urlName = UrlsController.normalizeUrlName(rawUrl);
+            var url = new Url(urlName);
+            UrlRepository.save(url);
+            var urlId = UrlRepository.findByName(urlName).get().getId();
+
             var postResponse = client.post(NamedRoutes.urlChecksPath(urlId));
             assertEquals(200, postResponse.code());
         });

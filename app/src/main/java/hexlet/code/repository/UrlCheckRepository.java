@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class UrlCheckRepository extends BaseRepository {
 
@@ -29,28 +28,28 @@ public class UrlCheckRepository extends BaseRepository {
         }
     }
 
-    public static Optional<UrlCheck> find(Long id) throws SQLException {
-        var sql = "SELECT * FROM url_checks WHERE id = ?";
-        try (
-            var conn = dataSource.getConnection();
-            var stmt = conn.prepareStatement(sql)
-        ) {
-            stmt.setLong(1, id);
-
-            var rs = stmt.executeQuery();
-            if (rs.next()) {
-                var check = UrlCheck.builder()
-                    .id(id)
-                    .statusCode(rs.getInt("status_code"))
-                    .urlId(rs.getLong("url_id"))
-                    .createdAt(rs.getTimestamp("created_at"))
-                    .build();
-                return Optional.of(check);
-            } else {
-                return Optional.empty();
-            }
-        }
-    }
+//    public static Optional<UrlCheck> find(Long id) throws SQLException {
+//        var sql = "SELECT * FROM url_checks WHERE id = ?";
+//        try (
+//            var conn = dataSource.getConnection();
+//            var stmt = conn.prepareStatement(sql)
+//        ) {
+//            stmt.setLong(1, id);
+//
+//            var rs = stmt.executeQuery();
+//            if (rs.next()) {
+//                var check = UrlCheck.builder()
+//                    .id(id)
+//                    .statusCode(rs.getInt("status_code"))
+//                    .urlId(rs.getLong("url_id"))
+//                    .createdAt(rs.getTimestamp("created_at"))
+//                    .build();
+//                return Optional.of(check);
+//            } else {
+//                return Optional.empty();
+//            }
+//        }
+//    }
 
     public static List<UrlCheck> getEntities() throws SQLException {
         var sql = "SELECT * FROM url_checks";

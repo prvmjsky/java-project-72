@@ -48,10 +48,7 @@ public class UrlsController {
     public static void create(Context ctx) throws SQLException, URISyntaxException {
 
         try {
-            var url = new URI(ctx.formParam("url")).normalize().toURL();
-            var protocol = url.getProtocol();
-            var authority = url.getAuthority();
-            var urlName = String.format("%s://%s", protocol, authority);
+            var urlName = normalizeUrlName(ctx.formParam("url"));
 
             if (UrlRepository.findByName(urlName).isPresent()) {
                 throw new IllegalArgumentException("Страница уже существует");
@@ -61,18 +58,24 @@ public class UrlsController {
 
             ctx.sessionAttribute("flash", "Страница успешно добавлена");
             ctx.sessionAttribute("flash-type", "alert alert-success");
-            ctx.redirect(NamedRoutes.rootPath());
 
-        } catch (MalformedURLException | IllegalArgumentException e) {
-
-            if (e instanceof MalformedURLException) {
-                ctx.sessionAttribute("flash", "Некорректный URL");
-            } else {
-                ctx.sessionAttribute("flash", e.getMessage());
-            }
-
+        } catch (URISyntaxException | MalformedURLException e) {
+            ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "alert alert-danger");
+
+        } catch (IllegalArgumentException e) {
+            ctx.sessionAttribute("flash", e.getMessage());
+            ctx.sessionAttribute("flash-type", "alert alert-danger");
+
+        } finally {
             ctx.redirect(NamedRoutes.rootPath());
         }
+    }
+
+    public static String normalizeUrlName(String rawUrl) throws URISyntaxException, MalformedURLException {
+        var url = new URI(rawUrl).normalize().toURL();
+        var protocol = url.getProtocol();
+        var authority = url.getAuthority();
+        return String.format("%s://%s", protocol, authority);
     }
 }
