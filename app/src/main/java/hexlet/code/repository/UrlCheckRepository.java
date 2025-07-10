@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UrlCheckRepository extends BaseRepository {
+public final class UrlCheckRepository extends BaseRepository {
 
     public static void save(UrlCheck check) throws SQLException {
         var sql = """

@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Getter
 @AllArgsConstructor
-public class UrlsPage extends BasePage {
+public final class UrlsPage extends BasePage {
     private List<Url> urls;
     private Map<Long, UrlCheck> latestChecks;
 }

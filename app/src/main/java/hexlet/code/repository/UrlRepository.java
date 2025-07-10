@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UrlRepository extends BaseRepository {
+public final class UrlRepository extends BaseRepository {
 
     public static void save(Url url) throws SQLException {
         var sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";

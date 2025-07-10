@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
-public class App {
+public final class App {
     private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) throws SQLException, IOException {
@@ -58,7 +58,7 @@ public class App {
         return TemplateEngine.create(codeResolver, ContentType.Html);
     }
 
-    protected static Javalin getApp() throws SQLException, IOException {
+    public static Javalin getApp() throws SQLException, IOException {
         var hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl());
         var dataSource = new HikariDataSource(hikariConfig);

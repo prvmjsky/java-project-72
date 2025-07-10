@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @AllArgsConstructor
-public class Url {
+public final class Url {
     private Long id;
     private String name;
     private LocalDateTime createdAt;

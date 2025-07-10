@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @AllArgsConstructor
-public class UrlCheck {
+public final class UrlCheck {
     private Long id;
     private Integer statusCode;
     private String title;

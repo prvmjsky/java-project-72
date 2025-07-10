@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
-public class UrlsController {
+public final class UrlsController {
 
     public static void index(Context ctx) throws SQLException {
         var urls = UrlRepository.getEntities();
