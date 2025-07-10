@@ -19,25 +19,27 @@ repositories {
 }
 
 dependencies {
+    val javalinVersion = "6.7.0"
+    val jteVersion = "3.2.1"
+    var lombokVersion = "1.18.38"
+
     testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("com.squareup.okhttp3:mockwebserver3:5.1.0")
+    testImplementation("org.mockito:mockito-core:5.18.0")
 
-    implementation("io.javalin:javalin-bundle:6.7.0")
+    implementation("io.javalin:javalin-bundle:$javalinVersion")
+    implementation("io.javalin:javalin-rendering:$javalinVersion")
+    implementation("gg.jte:jte:$jteVersion")
+    implementation("gg.jte:jte-watcher:$jteVersion")
     implementation("org.slf4j:slf4j-simple:2.0.17")
-    implementation("io.javalin:javalin-rendering:6.7.0")
-    implementation("gg.jte:jte:3.2.1")
-    implementation("gg.jte:jte-watcher:3.2.1")
-
-    compileOnly("org.projectlombok:lombok:1.18.38")
-    annotationProcessor("org.projectlombok:lombok:1.18.38")
-
     implementation("com.h2database:h2:2.3.232")
     implementation("com.zaxxer:HikariCP:6.3.0")
     implementation("org.postgresql:postgresql:42.7.7")
-
     implementation("com.konghq:unirest-java-core:4.4.7")
-    testImplementation("com.squareup.okhttp3:mockwebserver3:5.1.0")
-    testImplementation("org.mockito:mockito-core:5.18.0")
+
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
 }
 
 tasks.test {

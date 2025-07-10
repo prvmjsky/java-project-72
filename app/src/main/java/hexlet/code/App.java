@@ -55,8 +55,7 @@ public class App {
     private static TemplateEngine createTemplateEngine() {
         ClassLoader classLoader = App.class.getClassLoader();
         ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", classLoader);
-        TemplateEngine templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
-        return templateEngine;
+        return TemplateEngine.create(codeResolver, ContentType.Html);
     }
 
     protected static Javalin getApp() throws SQLException, IOException {
@@ -71,7 +70,7 @@ public class App {
             var sql = readResourceFile("schema.sql");
             statement.execute(sql);
         } catch (NullPointerException e) {
-            System.out.println("No SQL schema found");
+            LOG.info("No SQL schema found");
         }
 
         BaseRepository.dataSource = dataSource;
