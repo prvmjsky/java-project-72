@@ -8,7 +8,7 @@
     headTitle = "Главная страница",
     content = @`
         <h1>Привет, ${page.getCurrentUser()}!</h1>
-        <h3>Введите ссылку на сайт</h3>
+        <h4>Введите ссылку на сайт</h4>
         <form action ="${NamedRoutes.urlsPath()}" method="post">
             <input type="url" name="url" value="${page.getUrl()}" required>
             <input type="submit" value="Проверить">

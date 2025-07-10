@@ -20,12 +20,13 @@
 
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: white;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             padding: 20px;
         }
 
         header {
+            color: cornflowerblue
             margin-bottom: 20px;
         }
 
@@ -37,7 +38,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            background-color: white;
+            background-color: #fffcf7;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
@@ -76,13 +77,13 @@
             padding: 8px 16px;
             border-radius: 4px;
             border: none;
-            background-color: #0d6efd;
+            background-color: cornflowerblue;
             color: white;
             cursor:pointer;
         }
 
         form input[type="submit"]:hover {
-           background-color:#0b5ed7;
+           background-color:cornflowerblue;
         }
 
         footer {
@@ -90,7 +91,7 @@
             position:absolute;
             bottom:0;
             right:0;
-            background-color:#0d6efd;
+            background-color:cornflowerblue;
             color:white;
             padding:8px 6px;
             font-size:14px;
