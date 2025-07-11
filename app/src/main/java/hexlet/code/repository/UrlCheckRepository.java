@@ -62,6 +62,32 @@ public final class UrlCheckRepository extends BaseRepository {
 //        }
 //    }
 
+    public static List<UrlCheck> findByUrlId(Long urlId) throws SQLException {
+        var sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY id";
+        try (
+            var conn = dataSource.getConnection();
+            var stmt = conn.prepareStatement(sql)
+        ) {
+            stmt.setLong(1, urlId);
+            var rs = stmt.executeQuery();
+            var result = new ArrayList<UrlCheck>();
+            while (rs.next()) {
+                var check = UrlCheck.builder()
+                    .id(rs.getLong("id"))
+                    .statusCode(rs.getInt("status_code"))
+                    .title(rs.getString("title"))
+                    .h1(rs.getString("h1"))
+                    .description(rs.getString("description"))
+                    .urlId(urlId)
+                    .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                    .build();
+                result.add(check);
+            }
+
+            return result;
+        }
+    }
+
     public static Map<Long, UrlCheck> getLatestChecks() throws SQLException {
         var sql = """
             SELECT DISTINCT ON (url_id) *
@@ -91,28 +117,28 @@ public final class UrlCheckRepository extends BaseRepository {
         }
     }
 
-    public static List<UrlCheck> getEntities() throws SQLException {
-        var sql = "SELECT * FROM url_checks";
-        try (
-            var conn = dataSource.getConnection();
-            var stmt = conn.prepareStatement(sql)
-        ) {
-            var rs = stmt.executeQuery();
-            var result = new ArrayList<UrlCheck>();
-            while (rs.next()) {
-                var check = UrlCheck.builder()
-                    .id(rs.getLong("id"))
-                    .statusCode(rs.getInt("status_code"))
-                    .title(rs.getString("title"))
-                    .h1(rs.getString("h1"))
-                    .description(rs.getString("description"))
-                    .urlId(rs.getLong("url_id"))
-                    .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
-                    .build();
-                result.add(check);
-            }
-
-            return result;
-        }
-    }
+//    public static List<UrlCheck> getEntities() throws SQLException {
+//        var sql = "SELECT * FROM url_checks";
+//        try (
+//            var conn = dataSource.getConnection();
+//            var stmt = conn.prepareStatement(sql)
+//        ) {
+//            var rs = stmt.executeQuery();
+//            var result = new ArrayList<UrlCheck>();
+//            while (rs.next()) {
+//                var check = UrlCheck.builder()
+//                    .id(rs.getLong("id"))
+//                    .statusCode(rs.getInt("status_code"))
+//                    .title(rs.getString("title"))
+//                    .h1(rs.getString("h1"))
+//                    .description(rs.getString("description"))
+//                    .urlId(rs.getLong("url_id"))
+//                    .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+//                    .build();
+//                result.add(check);
+//            }
+//
+//            return result;
+//        }
+//    }
 }

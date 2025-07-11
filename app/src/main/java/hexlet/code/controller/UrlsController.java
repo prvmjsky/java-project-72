@@ -3,7 +3,6 @@ package hexlet.code.controller;
 import hexlet.code.dto.urls.UrlPage;
 import hexlet.code.dto.urls.UrlsPage;
 import hexlet.code.model.Url;
-import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
@@ -33,9 +32,7 @@ public final class UrlsController {
     public static void show(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         var url = UrlRepository.find(id).orElseThrow(NotFoundResponse::new);
-        var checks = UrlCheckRepository.getEntities().stream()
-            .filter(check -> check.getUrlId().equals(id))
-            .toList();
+        var checks = UrlCheckRepository.findByUrlId(id);
 
         var page = new UrlPage(url, checks);
 
@@ -44,7 +41,7 @@ public final class UrlsController {
         ctx.render("urls/show.jte", model("page", page));
     }
 
-    public static void create(Context ctx) throws SQLException, URISyntaxException {
+    public static void create(Context ctx) throws SQLException {
 
         try {
             var urlName = normalizeUrlName(ctx.formParam("url"));
