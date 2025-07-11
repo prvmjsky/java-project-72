@@ -6,4 +6,13 @@
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=prvmjsky_java-project-72&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=prvmjsky_java-project-72)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=prvmjsky_java-project-72&metric=coverage)](https://sonarcloud.io/summary/new_code?id=prvmjsky_java-project-72)
 
-**Open in browser:** https://java-project-72-bmut.onrender.com
+# Анализатор страниц
+Сервис для бесплатной проверки сайтов на SEO-пригодность
+
+Анализатор проверяет корректность метаданных и доступность веб-страниц
+
+**Демонстрационная версия:** https://java-project-72-bmut.onrender.com
+
+---
+* Проект выполнен в ходе курса "Java-разработчик" от онлайн-школы **Hexlet**
+* **Цель проекта**: отработать базовые принципы построения современных сайтов на MVC-архитектуре
