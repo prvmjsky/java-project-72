@@ -14,7 +14,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.HashMap;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -22,11 +21,7 @@ public final class UrlsController {
 
     public static void index(Context ctx) throws SQLException {
         var urls = UrlRepository.getEntities();
-        var latestChecks = new HashMap<Long, UrlCheck>();
-
-        for (var check : UrlCheckRepository.getEntities()) {
-            latestChecks.put(check.getUrlId(), check);
-        }
+        var latestChecks = UrlCheckRepository.getLatestChecks();
 
         var page = new UrlsPage(urls, latestChecks);
 

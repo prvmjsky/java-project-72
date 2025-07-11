@@ -6,7 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class UrlCheckRepository extends BaseRepository {
 
@@ -59,6 +61,35 @@ public final class UrlCheckRepository extends BaseRepository {
 //            }
 //        }
 //    }
+
+    public static Map<Long, UrlCheck> getLatestChecks() throws SQLException {
+        var sql = """
+            SELECT DISTINCT ON (url_id) *
+            FROM url_checks ORDER BY url_id DESC, id DESC
+            """;
+        try (
+            var conn = dataSource.getConnection();
+            var stmt = conn.prepareStatement(sql)
+        ) {
+            var rs = stmt.executeQuery();
+            var result = new HashMap<Long, UrlCheck>();
+            while (rs.next()) {
+                var urlId = rs.getLong("url_id");
+                var check = UrlCheck.builder()
+                    .id(rs.getLong("id"))
+                    .statusCode(rs.getInt("status_code"))
+                    .title(rs.getString("title"))
+                    .h1(rs.getString("h1"))
+                    .description(rs.getString("description"))
+                    .urlId(urlId)
+                    .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                    .build();
+                result.put(urlId, check);
+            }
+
+            return result;
+        }
+    }
 
     public static List<UrlCheck> getEntities() throws SQLException {
         var sql = "SELECT * FROM url_checks";
