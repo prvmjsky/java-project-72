@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.URI;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -134,7 +135,8 @@ public final class AppTest {
             assertEquals(200, postResponse.code());
             assertTrue(postResponse.body().string().contains("Главная страница"));
 
-            var urlName = UrlsController.normalizeUrlName(rawUrl);
+            var parsedUrl = new URI(rawUrl);
+            var urlName = UrlsController.normalizeUrlName(parsedUrl);
             var getResponse = client.get(NamedRoutes.urlsPath());
             assertTrue(getResponse.body().string().contains(urlName));
         });
@@ -143,7 +145,8 @@ public final class AppTest {
     @Test
     public void testPostUrlCheck() {
         JavalinTest.test(app, (server, client) -> {
-            var urlName = UrlsController.normalizeUrlName(rawUrl);
+            var parsedUrl = new URI(rawUrl);
+            var urlName = UrlsController.normalizeUrlName(parsedUrl);
             var url = new Url(urlName);
             UrlRepository.save(url);
             var urlId = UrlRepository.findByName(urlName).get().getId();

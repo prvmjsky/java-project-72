@@ -43,33 +43,41 @@ public final class UrlsController {
 
     public static void create(Context ctx) throws SQLException {
 
+        var inputUrl = ctx.formParam("url");
+        URI parsedUrl;
         try {
-            var urlName = normalizeUrlName(ctx.formParam("url"));
-
-            if (UrlRepository.findByName(urlName).isPresent()) {
-                throw new IllegalArgumentException("Страница уже существует");
-            }
-
-            UrlRepository.save(new Url(urlName));
-
-            ctx.sessionAttribute("flash", "Страница успешно добавлена");
-            ctx.sessionAttribute("flash-type", "alert alert-success");
-
-        } catch (URISyntaxException | MalformedURLException e) {
+            parsedUrl = new URI(inputUrl);
+        } catch (URISyntaxException e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "alert alert-danger");
+            ctx.redirect(NamedRoutes.rootPath());
+            return;
+        }
 
-        } catch (IllegalArgumentException e) {
-            ctx.sessionAttribute("flash", e.getMessage());
+        String urlName;
+        try {
+            urlName = normalizeUrlName(parsedUrl);
+        } catch (MalformedURLException e) {
+            ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "alert alert-danger");
+            ctx.redirect(NamedRoutes.rootPath());
+            return;
+        }
 
-        } finally {
+        if (UrlRepository.findByName(urlName).isPresent()) {
+            ctx.sessionAttribute("flash", "Страница уже существует");
+            ctx.sessionAttribute("flash-type", "alert alert-danger");
+            ctx.redirect(NamedRoutes.rootPath());
+        } else {
+            UrlRepository.save(new Url(urlName));
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
+            ctx.sessionAttribute("flash-type", "alert alert-success");
             ctx.redirect(NamedRoutes.rootPath());
         }
     }
 
-    public static String normalizeUrlName(String rawUrl) throws URISyntaxException, MalformedURLException {
-        var url = new URI(rawUrl).normalize().toURL();
+    public static String normalizeUrlName(URI rawUrl) throws MalformedURLException {
+        var url = rawUrl.normalize().toURL();
         var protocol = url.getProtocol();
         var authority = url.getAuthority();
         return String.format("%s://%s", protocol, authority);
