@@ -5,6 +5,7 @@ import hexlet.code.model.UrlCheck;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,7 @@ public final class UrlCheckRepository extends BaseRepository {
             stmt.setString(3, check.getH1());
             stmt.setString(4, check.getDescription());
             stmt.setLong(5, check.getUrlId());
-            stmt.setTimestamp(6, Timestamp.valueOf(check.getCreatedAt()));
+            stmt.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
             stmt.executeUpdate();
 
             var keys = stmt.getGeneratedKeys();
