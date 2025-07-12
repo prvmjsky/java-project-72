@@ -2,10 +2,12 @@ package hexlet.code;
 
 import hexlet.code.controller.UrlsController;
 import hexlet.code.model.Url;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import io.javalin.http.NotFoundResponse;
 import io.javalin.testtools.JavalinTest;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
@@ -16,7 +18,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import okhttp3.Headers;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,23 +33,44 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class AppTest {
+    private Javalin app;
     private Context ctx;
     private static MockWebServer server;
     private String rawUrl;
-    private Javalin app;
+
+    private static Document html;
+    private static String title = "title example";
+    private static String h1 = "h1 example";
+    private static String description = "description example";
+
+    @BeforeAll
+    public static void mockHtml() {
+        title = "title example";
+        h1 = "h1 example";
+        description = "description example";
+
+        html = Jsoup.parse("");
+        html.title(title);
+        var head = html.appendElement("html").appendElement("head");
+        head.appendElement("meta")
+            .attr("name", "description")
+            .attr("content", description);
+
+        var body = html.appendElement("body");
+        body.appendElement("h1").text(h1);
+    }
 
     @BeforeEach
     public void setUp() throws SQLException, IOException {
-        ctx = mock(Context.class);
-
         server = new MockWebServer();
-        var response = new MockResponse(200, new Headers.Builder().build(), "i'm so tired");
+        var response = new MockResponse(200, new Headers.Builder().build(), html.toString());
         server.enqueue(response);
         server.start();
 
         rawUrl = server.url("/").toString();
 
         app = App.getApp();
+        ctx = mock(Context.class);
     }
 
     @AfterAll
@@ -131,9 +157,10 @@ public final class AppTest {
     public void testPostUrl() {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=" + rawUrl;
-            var postResponse = client.post(NamedRoutes.urlsPath(), requestBody);
-            assertEquals(200, postResponse.code());
-            assertTrue(postResponse.body().string().contains("Главная страница"));
+            try (var postResponse = client.post(NamedRoutes.urlsPath(), requestBody)) {
+                assertEquals(200, postResponse.code());
+                assertTrue(postResponse.body().string().contains("Главная страница"));
+            }
 
             var parsedUrl = new URI(rawUrl);
             var urlName = UrlsController.normalizeUrlName(parsedUrl);
@@ -149,10 +176,17 @@ public final class AppTest {
             var urlName = UrlsController.normalizeUrlName(parsedUrl);
             var url = new Url(urlName);
             UrlRepository.save(url);
-            var urlId = UrlRepository.findByName(urlName).get().getId();
+            var urlId = UrlRepository.findByName(urlName).orElseThrow(NotFoundResponse::new).getId();
 
-            var postResponse = client.post(NamedRoutes.urlChecksPath(urlId));
-            assertEquals(200, postResponse.code());
+            try (var postResponse = client.post(NamedRoutes.urlChecksPath(urlId))) {
+                assertEquals(200, postResponse.code());
+            }
+
+            var check = UrlCheckRepository.findByUrlId(urlId).getLast();
+            assertEquals(200, check.getStatusCode());
+            assertEquals(title, check.getTitle());
+            assertEquals(h1, check.getH1());
+            assertEquals(description, check.getDescription());
         });
     }
 }
