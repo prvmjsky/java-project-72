@@ -15,6 +15,11 @@ import org.jsoup.nodes.Element;
 import java.sql.SQLException;
 
 public final class UrlChecksController {
+
+    private UrlChecksController() {
+        throw new AssertionError("Util class cannot be instantiated");
+    }
+
     public static void create(Context ctx) throws SQLException {
 
         var urlId = ctx.pathParamAsClass("id", Long.class).get();

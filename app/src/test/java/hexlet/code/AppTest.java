@@ -32,10 +32,10 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class AppTest {
+final class AppTest {
     private Javalin app;
     private Context ctx;
-    private static MockWebServer server;
+    private static MockWebServer mockWebServer;
     private String rawUrl;
 
     private static Document html;
@@ -44,7 +44,7 @@ public final class AppTest {
     private static String description = "description example";
 
     @BeforeAll
-    public static void mockHtml() {
+    static void mockHtml() {
         title = "title example";
         h1 = "h1 example";
         description = "description example";
@@ -61,25 +61,25 @@ public final class AppTest {
     }
 
     @BeforeEach
-    public void setUp() throws SQLException, IOException {
-        server = new MockWebServer();
+    void setUp() throws SQLException, IOException {
+        mockWebServer = new MockWebServer();
         var response = new MockResponse(200, new Headers.Builder().build(), html.toString());
-        server.enqueue(response);
-        server.start();
+        mockWebServer.enqueue(response);
+        mockWebServer.start();
 
-        rawUrl = server.url("/").toString();
+        rawUrl = mockWebServer.url("/").toString();
 
         app = App.getApp();
         ctx = mock(Context.class);
     }
 
     @AfterAll
-    public static void tearDown() {
-        server.close();
+    static void tearDown() {
+        mockWebServer.close();
     }
 
     @Test
-    public void testMainPage() {
+    void testMainPage() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get(NamedRoutes.rootPath());
             assertEquals(200, response.code());
@@ -88,7 +88,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testUrlsPage() {
+    void testUrlsPage() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get(NamedRoutes.urlsPath());
             assertEquals(200, response.code());
@@ -97,7 +97,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testUrlPage() {
+    void testUrlPage() {
         JavalinTest.test(app, (server, client) -> {
 
             var url1 = new Url("https://one.com");
@@ -118,7 +118,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testUrlNotFound() {
+    void testUrlNotFound() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get(NamedRoutes.urlPath("1"));
             assertEquals(404, response.code());
@@ -126,7 +126,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testUrlDuplicate() {
+    void testUrlDuplicate() {
         JavalinTest.test(app, (server, client) -> {
             when(ctx.formParam("url")).thenReturn(rawUrl);
 
@@ -143,7 +143,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testUrlIncorrect() {
+    void testUrlIncorrect() {
         JavalinTest.test(app, (server, client) -> {
             when(ctx.formParam("url")).thenReturn(" " + rawUrl);
             assertDoesNotThrow(() -> UrlsController.create(ctx));
@@ -154,7 +154,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testPostUrl() {
+    void testPostUrl() {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=" + rawUrl;
             try (var postResponse = client.post(NamedRoutes.urlsPath(), requestBody)) {
@@ -170,7 +170,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testPostUrlCheck() {
+    void testPostUrlCheck() {
         JavalinTest.test(app, (server, client) -> {
             var parsedUrl = new URI(rawUrl);
             var urlName = UrlsController.normalizeUrlName(parsedUrl);

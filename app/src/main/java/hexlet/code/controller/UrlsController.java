@@ -18,6 +18,10 @@ import static io.javalin.rendering.template.TemplateUtil.model;
 
 public final class UrlsController {
 
+    private UrlsController() {
+        throw new AssertionError("Util class cannot be instantiated");
+    }
+
     public static void index(Context ctx) throws SQLException {
         var urls = UrlRepository.getEntities();
         var latestChecks = UrlCheckRepository.getLatestChecks();
@@ -43,7 +47,7 @@ public final class UrlsController {
 
     public static void create(Context ctx) throws SQLException {
 
-        var inputUrl = ctx.formParam("url");
+        var inputUrl = ctx.formParamAsClass("url", String.class).getOrThrow(NotFoundResponse::new);
         URI parsedUrl;
         try {
             parsedUrl = new URI(inputUrl);

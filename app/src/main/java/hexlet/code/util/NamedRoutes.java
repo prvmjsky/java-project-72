@@ -2,6 +2,10 @@ package hexlet.code.util;
 
 public final class NamedRoutes {
 
+    private NamedRoutes() {
+        throw new AssertionError("Util class cannot be instantiated");
+    }
+
     public static String rootPath() {
         return "/";
     }

@@ -13,6 +13,10 @@ import java.util.Map;
 
 public final class UrlCheckRepository extends BaseRepository {
 
+    private UrlCheckRepository() {
+        throw new AssertionError("Util class cannot be instantiated");
+    }
+
     public static void save(UrlCheck check) throws SQLException {
         var sql = """
             INSERT INTO url_checks
@@ -39,29 +43,6 @@ public final class UrlCheckRepository extends BaseRepository {
             }
         }
     }
-
-//    public static Optional<UrlCheck> find(Long id) throws SQLException {
-//        var sql = "SELECT * FROM url_checks WHERE id = ?";
-//        try (
-//            var conn = dataSource.getConnection();
-//            var stmt = conn.prepareStatement(sql)
-//        ) {
-//            stmt.setLong(1, id);
-//
-//            var rs = stmt.executeQuery();
-//            if (rs.next()) {
-//                var check = UrlCheck.builder()
-//                    .id(id)
-//                    .statusCode(rs.getInt("status_code"))
-//                    .urlId(rs.getLong("url_id"))
-//                    .createdAt(rs.getTimestamp("created_at"))
-//                    .build();
-//                return Optional.of(check);
-//            } else {
-//                return Optional.empty();
-//            }
-//        }
-//    }
 
     public static List<UrlCheck> findByUrlId(Long urlId) throws SQLException {
         var sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY id";
@@ -117,29 +98,4 @@ public final class UrlCheckRepository extends BaseRepository {
             return result;
         }
     }
-
-//    public static List<UrlCheck> getEntities() throws SQLException {
-//        var sql = "SELECT * FROM url_checks";
-//        try (
-//            var conn = dataSource.getConnection();
-//            var stmt = conn.prepareStatement(sql)
-//        ) {
-//            var rs = stmt.executeQuery();
-//            var result = new ArrayList<UrlCheck>();
-//            while (rs.next()) {
-//                var check = UrlCheck.builder()
-//                    .id(rs.getLong("id"))
-//                    .statusCode(rs.getInt("status_code"))
-//                    .title(rs.getString("title"))
-//                    .h1(rs.getString("h1"))
-//                    .description(rs.getString("description"))
-//                    .urlId(rs.getLong("url_id"))
-//                    .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
-//                    .build();
-//                result.add(check);
-//            }
-//
-//            return result;
-//        }
-//    }
 }

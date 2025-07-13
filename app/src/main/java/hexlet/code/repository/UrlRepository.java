@@ -12,6 +12,10 @@ import java.util.Optional;
 
 public final class UrlRepository extends BaseRepository {
 
+    private UrlRepository() {
+        throw new AssertionError("Util class cannot be instantiated");
+    }
+
     public static void save(Url url) throws SQLException {
         var sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";
         try (var conn = dataSource.getConnection();
