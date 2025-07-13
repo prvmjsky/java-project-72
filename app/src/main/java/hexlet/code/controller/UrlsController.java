@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -47,7 +48,10 @@ public final class UrlsController {
 
     public static void create(Context ctx) throws SQLException {
 
-        var inputUrl = ctx.formParamAsClass("url", String.class).getOrThrow(NotFoundResponse::new);
+        var inputUrl = ctx.formParamAsClass("url", String.class)
+            .check(Objects::nonNull, "Url not found in form")
+            .getOrThrow(NotFoundResponse::new);
+
         URI parsedUrl;
         try {
             parsedUrl = new URI(inputUrl);
