@@ -94,6 +94,8 @@ public final class App {
             ctx.render("index.jte", model("page", page));
         });
 
+        app.error(404, ctx -> ctx.render("404.jte"));
+
         app.get(NamedRoutes.urlsPath(), UrlsController::index);
         app.post(NamedRoutes.urlsPath(), UrlsController::create);
         app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);

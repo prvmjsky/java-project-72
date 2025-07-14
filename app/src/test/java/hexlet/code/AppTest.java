@@ -23,8 +23,6 @@ import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class AppTest {
-    public static final Logger LOG = LoggerFactory.getLogger(AppTest.class);
-
     private Javalin app;
     private Context ctx;
     private static MockWebServer mockWebServer;
@@ -114,6 +110,7 @@ final class AppTest {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get(NamedRoutes.urlPath("1"));
             assertEquals(404, response.code());
+            assertTrue(response.body().string().contains("Такой страницы здесь нет"));
         });
     }
 
