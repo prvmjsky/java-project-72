@@ -21,47 +21,39 @@ import okhttp3.Headers;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class AppTest {
+    public static final Logger LOG = LoggerFactory.getLogger(AppTest.class);
+
     private Javalin app;
     private Context ctx;
     private static MockWebServer mockWebServer;
     private String rawUrl;
-
     private static Document html;
-    private static String title = "title example";
-    private static String h1 = "h1 example";
-    private static String description = "description example";
 
-    @BeforeAll
-    static void mockHtml() {
-        title = "title example";
-        h1 = "h1 example";
-        description = "description example";
-
-        html = Jsoup.parse("");
-        html.title(title);
-        var head = html.appendElement("html").appendElement("head");
-        head.appendElement("meta")
-            .attr("name", "description")
-            .attr("content", description);
-
-        var body = html.appendElement("body");
-        body.appendElement("h1").text(h1);
+    private static File getResourceFile(String filename) {
+        var path = Paths.get("src", "test", "resources", filename)
+            .toAbsolutePath().normalize();
+        return new File(String.valueOf(path));
     }
 
     @BeforeEach
     void setUp() throws SQLException, IOException {
+        html = Jsoup.parse(getResourceFile("mockHtml.html"), "UTF-8");
+
         mockWebServer = new MockWebServer();
         var response = new MockResponse(200, new Headers.Builder().build(), html.toString());
         mockWebServer.enqueue(response);
@@ -184,6 +176,10 @@ final class AppTest {
 
             var check = UrlCheckRepository.findByUrlId(urlId).getLast();
             assertEquals(200, check.getStatusCode());
+
+            var title = html.title();
+            var h1 = html.selectFirst("h1").text();
+            var description = html.selectFirst("meta[name=description]").attr("content");
             assertEquals(title, check.getTitle());
             assertEquals(h1, check.getH1());
             assertEquals(description, check.getDescription());
