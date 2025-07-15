@@ -11,8 +11,7 @@ import hexlet.code.repository.BaseRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -27,8 +26,8 @@ import java.util.stream.Collectors;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
+@Slf4j
 public final class App {
-    private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) throws SQLException, IOException {
         var app = getApp();
@@ -70,7 +69,7 @@ public final class App {
             var sql = readResourceFile("schema.sql");
             statement.execute(sql);
         } catch (NullPointerException e) {
-            LOG.info("No SQL schema found");
+            log.info("No SQL schema found");
         }
 
         BaseRepository.dataSource = dataSource;
@@ -80,7 +79,7 @@ public final class App {
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-        app.before(ctx -> LOG.info(Instant.now().toString()));
+        app.before(ctx -> log.info(Instant.now().toString()));
 
         app.get(NamedRoutes.rootPath(), ctx -> {
             String currentUser = Objects.requireNonNullElse(
